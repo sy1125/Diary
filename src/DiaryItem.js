@@ -1,4 +1,4 @@
-import {useRef,useState} from "react";
+import React, {useEffect, useRef,useState} from "react";
 
 const DiaryItem = ({
    onEdit,
@@ -9,6 +9,10 @@ const DiaryItem = ({
    created_date, 
    emotion 
   }) => {
+    useEffect(()=> {
+      console.log(`${id}반째 아이템 렌더!`);
+    });
+
     const [isEdit, setIsEdit] = useState(false);
     const toggleIsEdit = () => setIsEdit(!isEdit);
     const [localContent,setLocalContent] = useState(content);
@@ -65,4 +69,4 @@ const DiaryItem = ({
   </div>
   );
 };
-export default DiaryItem;
+export default React.memo(DiaryItem);

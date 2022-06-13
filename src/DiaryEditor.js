@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import React,{ useEffect, useRef, useState } from "react";
 
 const DiaryEditor = ({ onCreate }) => {
   const authorInput = useRef();
+  const contentInput = useRef();
 
   const [state, setState] = useState({
     author: "",
@@ -22,7 +23,7 @@ const DiaryEditor = ({ onCreate }) => {
       return;
     }
     if (state.content.length < 5) {
-      authorInput.current.focus();
+      contentInput.current.focus();
       return;
     }
     onCreate(state.author, state.content, state.emotion);
@@ -71,4 +72,4 @@ const DiaryEditor = ({ onCreate }) => {
     </div>
   </div>
 }
-export default DiaryEditor;
+export default React.memo(DiaryEditor);
