@@ -20,15 +20,18 @@ const reducer = (state,action) => {
       return state.filter((it)=>it.id !== action.targetId);
     }
     case 'EDIT':{
-      return state.map((it)=>it.id === action.targetId ? {...it, content:action.newContent}: it)
+      return state.map((it)=>it.id === action.targetId ? {...it, content:action.newContent}: it);
     }
     default :
     return state;
   }
 };
 
+export const DiaryStateContext = React.createContext();
+
+export const DiaryDispatchContext = React.createContext();
+
 function App() {
-  // const [data, setData] = useState([]);
   const [data,dispatch] = useReducer(reducer,[]);
 
   const dataId = useRef(0);
@@ -57,11 +60,15 @@ function App() {
   },[]);
 
   const onRemove = useCallback((targetId) => {
-    dispatch({type:"REMOVE",targetId})
+    dispatch({type:"REMOVE",targetId});
   },[]);
 
   const onEdit = useCallback((targetId, newContent) => {
-    dispatch({type:"EDIT", targetId, newContent})
+    dispatch({type:"EDIT", targetId, newContent});
+  },[]);
+
+  const memoizedDispatches = useMemo(()=>{
+    return {onCreate,onRemove,onEdit}
   },[]);
 
   const getDiaryAnalysis = useMemo(() => {
@@ -73,14 +80,18 @@ function App() {
   const {goodCount, badCount, goodRatio} = getDiaryAnalysis;
 
   return (
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={memoizedDispatches}>
     <div className="App">
-      <DiaryEditor onCreate={onCreate} />
+      <DiaryEditor />
       <div>전체 일기 : {data.length}</div>
       <div>기분 좋은 일기 개수 : {goodCount}</div>
       <div>가뷴 나쁜 일기 개수 : {badCount}</div>
       <div>기분 좋은 일기 비율 : {goodRatio}</div>
-      <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data} />
+      <DiaryList />
     </div>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 
